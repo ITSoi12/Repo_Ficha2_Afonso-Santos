@@ -20,9 +20,6 @@ export default function CardList() {
             <p>Ataque: {card.attack}</p>
             <p>Defesa: {card.defense}</p>
 
-            {card.attack >= 6 && (
-              <p><strong>Carta forte</strong></p>
-            )}
           </div>
         ))}
       </>
