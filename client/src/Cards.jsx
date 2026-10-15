@@ -9,21 +9,47 @@ export const cards = [
   
 
 export default function CardList() {
+  const [pesquisa, setPesquisa] = useState("");
   const [filtro, setFiltro] = useState("todos");
+  const [cartaAleatoria, setCartaAleatoria] = useState(null);
 
-  const cartasFiltradas = cards.filter(
-    (card) => filtro === "todos" || card.type === filtro
-  );
+  const cartasFiltradas = cards.filter((card) => {
+    const correspondeTipo = filtro === "todos" || card.type === filtro;
+    const correspondePesquisa = card.name
+      .toLowerCase()
+      .includes(pesquisa.toLowerCase());
+
+    return correspondeTipo && correspondePesquisa;
+  });
 
   return (
     <main>
       <h1>A minha coleção</h1>
 
-      <button onClick={() => setFiltro("todos")}>
+      <input
+        type="text"
+        value={pesquisa}
+        onChange={(event) => setPesquisa(event.target.value)}
+        placeholder="Pesquisar carta"
+      />
+
+      <h1></h1>
+
+      <button
+        onClick={() => {
+          setCartaAleatoria(null);
+          setFiltro("todos");
+        }}
+      >
         Filtrar todas as cartas
       </button>
 
-      <button onClick={() => setFiltro("Criatura")}>
+      <button
+        onClick={() => {
+          setCartaAleatoria(null);
+          setFiltro("Criatura");
+        }}
+      >
         Filtrar cartas de criatura
       </button>
 
