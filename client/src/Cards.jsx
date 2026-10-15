@@ -6,35 +6,34 @@ export const cards = [
   { name: "Cavaleiro das Sombras", type: "Criatura", attack: 5, defense: 6 },
   { name: "Cavaleiro carmesin", type: "Criatura", attack: 6, defense: 6 },
 ];
-  
 
 export default function CardList() {
   const [pesquisa, setPesquisa] = useState("");
   const [filtro, setFiltro] = useState("todos");
   const [cartaAleatoria, setCartaAleatoria] = useState(null);
 
-  const cartasFiltradas = cards.filter((card) => {
-    const correspondeTipo = filtro === "todos" || card.type === filtro;
-    const correspondePesquisa = card.name
-      .toLowerCase()
-      .includes(pesquisa.toLowerCase());
+  const cartasFiltradas =
+    filtro === "Criatura"
+      ? cards.filter((card) => card.type === "Criatura")
+      : cards;
 
-    return correspondeTipo && correspondePesquisa;
-  });
+  const cartasPesquisadas = cartasFiltradas.filter((card) =>
+    card.name.toLowerCase().includes(pesquisa.toLowerCase())
+  );
 
   return (
     <main>
       <h1>A minha coleção</h1>
-
       <input
         type="text"
+        placeholder="Procurar carta por nome"
         value={pesquisa}
-        onChange={(event) => setPesquisa(event.target.value)}
-        placeholder="Pesquisar carta"
+        onChange={(e) => {
+          setPesquisa(e.target.value);
+          setCartaAleatoria(null);
+        }}
       />
-
       <h1></h1>
-
       <button
         onClick={() => {
           setCartaAleatoria(null);
@@ -43,7 +42,6 @@ export default function CardList() {
       >
         Filtrar todas as cartas
       </button>
-
       <button
         onClick={() => {
           setCartaAleatoria(null);
@@ -52,23 +50,46 @@ export default function CardList() {
       >
         Filtrar cartas de criatura
       </button>
+      <button
+        onClick={() => {
+          if (cartasPesquisadas.length > 0) {
+            const indice = Math.floor(Math.random() * cartasPesquisadas.length);
+            setCartaAleatoria(cartasPesquisadas[indice]);
+          }
+        }}
+      >
+        Carta á sorte
+      </button>
+      {cartaAleatoria ? (
+        <section>
+          <h2>Carta sorteada</h2>
+          <h3>{cartaAleatoria.name}</h3>
+          <p>Tipo: {cartaAleatoria.type}</p>
+          <p>Ataque: {cartaAleatoria.attack}</p>
+          <p>Defesa: {cartaAleatoria.defense}</p>
 
-      <h2>Tenho {cartasFiltradas.length} cartas</h2>
-
-      {cartasFiltradas.map((card, index) => (
-        <div key={index}>
-          <h3>{card.name}</h3>
-          <p>Tipo: {card.type}</p>
-          <p>Ataque: {card.attack}</p>
-          <p>Defesa: {card.defense}</p>
-
-          {card.attack >= 6 && (
-            <p>
-              <strong>Carta forte</strong>
-            </p>
+          {cartaAleatoria.attack >= 6 && (
+            <p><strong>Carta forte</strong></p>
           )}
-        </div>
-      ))}
+        </section>
+      ) : (
+        <>
+          <h2>Tenho {cartasPesquisadas.length} cartas</h2>
+
+          {cartasPesquisadas.map((card, index) => (
+            <div key={index}>
+              <h3>{card.name}</h3>
+              <p>Tipo: {card.type}</p>
+              <p>Ataque: {card.attack}</p>
+              <p>Defesa: {card.defense}</p>
+
+              {card.attack >= 6 && (
+                <p><strong>Carta forte</strong></p>
+              )}
+            </div>
+          ))}
+        </>
+      )}
     </main>
   );
 }
